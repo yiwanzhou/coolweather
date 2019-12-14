@@ -1,5 +1,8 @@
 package com.example.asus.myappqimo;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,55 +25,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity  {
 
-    TextView responseText;
+    //TextView responseText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button sendRequest=(Button)findViewById(R.id.send_request);
-        responseText=(TextView)findViewById(R.id.response_text);
-        sendRequest.setOnClickListener(this);
-    }
-    @Override
-    public void onClick(View v){
-        if (v.getId()==R.id.send_request){
-            sendRequestWithOkHttp();
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getString("weather",null)!=null){
+            Intent intent=new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
         }
-    }
-    private void sendRequestWithOkHttp(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
-                try{
-                    OkHttpClient client=new OkHttpClient();
-                    Request request=new Request.Builder()
-                            .url("http://guolin.tech/api/china.json")
-                            .build();
-                    Response response=client.newCall(request).execute();
-                    String responseData=response.body().string();
-                    parseJSONWithJSONObject(responseData);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
-    private void parseJSONWithJSONObject(String jsonData){
-        try{
-            JSONArray jsonArray=new JSONArray(jsonData);
-            for (int i=0;i<jsonArray.length();i++){
-                JSONObject jsonObject=jsonArray.getJSONObject(i);
-                String id=jsonObject.getString("id");
-                String name=jsonObject.getString("name");
-                Log.d("MainActivity","id is"+id);
-                Log.d("MainActivity","name is"+name);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+
 
 }

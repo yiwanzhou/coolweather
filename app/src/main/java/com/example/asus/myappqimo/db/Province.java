@@ -1,5 +1,5 @@
 package com.example.asus.myappqimo.db;
-
+import org.litepal.crud.DataSupport;
 /**
  * Created by ASUS on 2019-12-08.
  */
